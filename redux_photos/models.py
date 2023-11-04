@@ -1,18 +1,26 @@
-from sqlalchemy import  Boolean, Column,  Integer, String, Text
-from sqlalchemy.orm import Relationship
+from __future__ import annotations
+from sqlalchemy import  Boolean, Column,  Integer, String, Table, Text
+from sqlalchemy.orm import Relationship, Mapped
 from sqlalchemy.orm.properties import ForeignKey
 
 from .database import Base
 
 
+likes_table = Table(
+        "likes",
+        Base.metadata,
+        Column("user_id", ForeignKey("users.id")),
+        Column("photo_id", ForeignKey("photos.id")),
+        )
+
 class Photo(Base):
     __tablename__ = "photos"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(244))
-    like =  Column(Boolean, default=False)
     img_src = Column(Text)
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = Relationship("User", back_populates="photos")
+    likes: Mapped[list[User]] = Relationship(secondary=likes_table)
 
 class User(Base):
     __tablename__ = "users"
