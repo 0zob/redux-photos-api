@@ -5,27 +5,33 @@ class UserBase(BaseModel):
     name: str
     icon_src: str
 
+
 class UserCreate(UserBase):
     pass
+
 
 class User(UserBase):
     id: int
 
-    class Config():
+    class Config:
         from_attributes = True
+
+
 class PhotoBase(BaseModel):
     title: str
     img_src: str
 
+
 class PhotoCreate(PhotoBase):
     pass
+
 
 class Photo(PhotoBase):
     id: int
     owner_id: int
     likes: list[User]
 
-    class Config():
+    class Config:
         from_attributes = True
 
 
