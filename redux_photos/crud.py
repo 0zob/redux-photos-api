@@ -5,6 +5,16 @@ from . import models, schemas
 def get_photos(db: Session):
     return db.query(models.Photo).all()
 
+
+def like_photo(db: Session, photo_id, user_id):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    photo = db.query(models.Photo).filter(models.Photo.id == photo_id).first()
+    photo.likes.append(user)
+    db.add(photo)
+    db.commit()
+    db.refresh(photo)
+    return photo
+
 def create_user_photo(db: Session, photo: schemas.PhotoCreate, user_id: int):
     db_photo = models.Photo(**photo.model_dump(), owner_id=user_id)
     db.add(db_photo)
@@ -21,3 +31,5 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
