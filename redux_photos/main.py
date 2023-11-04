@@ -16,12 +16,20 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/", response_model=list[schemas.Photo])
+@app.get("/photos", response_model=list[schemas.Photo])
 def read_photos(db: Session = Depends(get_db)):
     photos = crud.get_photos(db)
     return photos
 
-@app.post("/", response_model=schemas.Photo)
-def create_photos(photo: schemas.PhotoCreate, db: Session = Depends(get_db)):
-    return crud.create_photo(db, photo)
+@app.post("/users/{user_id}/photos", response_model=schemas.Photo)
+def create_photo_for_user(user_id: int, photo: schemas.PhotoCreate, db: Session = Depends(get_db)):
+    return crud.create_user_photo(db, photo, user_id)
+
+@app.get("/users", response_model=list[schemas.User])
+def read_users(db: Session = Depends(get_db)):
+    return crud.get_users(db)
+
+@app.post("/users", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    return crud.create_user(db, user)
 
