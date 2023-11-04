@@ -21,6 +21,10 @@ def read_photos(db: Session = Depends(get_db)):
     photos = crud.get_photos(db)
     return photos
 
+@app.post("/photos/like/{photo_id}", response_model=schemas.Photo)
+def like_photo(photo_id: int, data: schemas.Like,db: Session = Depends(get_db)):
+    return crud.like_photo(db, photo_id, data.user_id) 
+
 @app.post("/users/{user_id}/photos", response_model=schemas.Photo)
 def create_photo_for_user(user_id: int, photo: schemas.PhotoCreate, db: Session = Depends(get_db)):
     return crud.create_user_photo(db, photo, user_id)
